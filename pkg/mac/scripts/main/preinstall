@@ -1,0 +1,11 @@
+#! /bin/sh
+
+launchctl kill SIGTERM system/org.filezilla-project.filezilla-server.service
+
+if [ -f "/Library/LaunchDaemons/org.filezilla-project.filezilla-server.service.plist" ]; then
+  launchctl bootout system /Library/LaunchDaemons/org.filezilla-project.filezilla-server.service.plist
+fi
+rm -f /Library/LaunchDaemons/org.filezilla-project.filezilla-server.service.plist
+
+true
+

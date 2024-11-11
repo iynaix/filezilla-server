@@ -1,0 +1,6 @@
+/* Define if you want to enable the webui */
+#undef ENABLE_FZ_WEBUI
+
+/* Define if you want to enable the update checker */
+#undef ENABLE_FZ_UPDATE_CHECKER
+

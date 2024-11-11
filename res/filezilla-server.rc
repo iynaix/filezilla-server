@@ -1,0 +1,7 @@
+//{{NO_DEPENDENCIES}}
+
+appicon ICON "filezilla-server.ico"
+
+#include <winres.h>
+#include "filezilla-server.version.rc"
+

@@ -1,0 +1,13 @@
+//{{NO_DEPENDENCIES}}
+
+#define wxUSE_NO_MANIFEST 1
+1 24 "filezilla-server-gui.manifest.xml"
+
+appicon ICON "filezilla-server-gui.ico"
+
+#define APSTUDIO_READONLY_SYMBOLS
+#include <wx/msw/wx.rc>
+#undef APSTUDIO_READONLY_SYMBOLS
+
+#include "filezilla-server-gui.version.rc"
+

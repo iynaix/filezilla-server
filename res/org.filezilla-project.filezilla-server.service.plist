@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>org.filezilla-project.filezilla-server.service</string>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>LC_CTYPE</key>
+		<string>en_US.UTF-8</string>
+	</dict>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Applications/FileZilla Server.app/Contents/MacOS/filezilla-server</string>
+		<string>--config-dir=/Library/Preferences/org.filezilla-project.filezilla-server.service</string>
+	</array>
+	<key>UserName</key>
+	<string>root</string>
+	<key>GroupName</key>
+	<string>wheel</string>
+	<key>Disabled</key>
+	<false/>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>AssociatedBundleIdentifiers</key>
+	<array>
+		<string>org.filezilla-project.filezilla-server</string>
+	</array>
+</dict>
+</plist>

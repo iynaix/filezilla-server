@@ -1,0 +1,5 @@
+filezilla-server: dir-or-file-in-opt
+filezilla-server: no-changelog
+filezilla-server: read-in-maintainer-script
+# We are not using [[ and ]], the [[ lintian detects is part of a matching class of characters used in a switch statement
+filezilla-server: possible-bashism-in-maintainer-script 

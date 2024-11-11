@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file was created by NSISDialogDesigner 1.5.0.0
+https://coolsoft.altervista.org/nsisdialogdesigner
+Do not edit manually!
+-->
+<Dialog Name="ServerSettings" Title="Server settings" Subtitle="${PACKAGE_NAME} administration settings" GenerateShowFunction="False">
+  <HeaderCustomScript>!include "serversettings.extra.nsh"</HeaderCustomScript>
+  <CreateFunctionCustomScript>Call fnc_ServerSettings_OnCreate</CreateFunctionCustomScript>
+  <Label Name="Label1" Location="0, 2" Size="450, 20" Text="$(S_ServerSettings_Admin_ChoosePort)" TabIndex="0" />
+  <Number Name="Admin_PortNumber" Location="0, 23" Text="$V_ServerSettings_Admin_PortNumber" MaxLength="5" TabIndex="1" />
+  <Label Name="Label3" Location="0, 57" Size="450, 20" Text="$(S_ServerSettings_Admin_ChoosePassword)" TabIndex="2" />
+  <Password Name="Admin_Password1" Location="0, 78" Size="450, 20" TabIndex="3" onChange="fnc_ServerSettings_Admin_PasswordChanged" />
+  <Label Name="Label4" Location="0, 103" Size="450, 20" Text="$(S_ServerSettings_Admin_RetypePassword)" TabIndex="4" />
+  <Password Name="Admin_Password2" Location="0, 125" Size="450, 20" TabIndex="5" />
+  <CheckBox Name="Admin_ListenAll" Location="0, 164" Size="450, 20" Text="$(S_ServerSettings_Admin_ListenOnAllInterfaces)" TabIndex="6" Enabled="False" />
+</Dialog>

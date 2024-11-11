@@ -1,0 +1,76 @@
+SERVER_EXES = \
+	$(PKG_BINDIR)/filezilla-server$(EXEEXT) \
+	$(PKG_BINDIR)/filezilla-server-config-converter$(EXEEXT) \
+	$(PKG_BINDIR)/filezilla-server-crypt$(EXEEXT) \
+	$(PKG_BINDIR)/filezilla-server-impersonator$(EXEEXT)
+
+GUI_EXES = \
+	$(PKG_BINDIR)/filezilla-server-gui$(EXEEXT)
+
+ALL_EXES = \
+	$(SERVER_EXES) \
+	$(GUI_EXES)
+
+ALL_BLDS = \
+	$(top_builddir)/src/server/$(EXEC_OBJDIR)/filezilla-server$(EXEEXT) \
+	$(top_builddir)/src/tools/configconverter/$(EXEC_OBJDIR)/filezilla-server-config-converter$(EXEEXT) \
+	$(top_builddir)/src/tools/crypt/$(EXEC_OBJDIR)/filezilla-server-crypt$(EXEEXT) \
+	$(top_builddir)/src/gui/$(EXEC_OBJDIR)/filezilla-server-gui$(EXEEXT) \
+	$(top_builddir)/src/tools/impersonator/$(EXEC_OBJDIR)/filezilla-server-impersonator$(EXEEXT)
+
+#######
+
+PKG_EULA = COPYING
+		
+#######
+
+RED    = [ -t 1 ] && echo -en '\033[1;31m'
+GREEN  = [ -t 1 ] && echo -en '\033[1;32m'
+YELLOW = [ -t 1 ] && echo -en '\033[1;33m'
+NORMAL = [ -t 1 ] && echo -en '\033[0m'
+
+SHELL = bash
+
+#######
+
+$(ALL_EXES): $(ALL_BLDS)
+	@for b in $?; do \
+		if [ "$$(basename "$@")" = "$$(basename "$$b")" ]; then \
+			$(MKDIR_P) "$$(dirname "$@")"; \
+			cp -v "$$b" "$@"; \
+			chmod +w "$@"; \
+		fi; \
+	done
+
+$(ALL_BLDS): .maybe_rebuild
+	@true #An empty recipe doesn't work here.
+
+.maybe_rebuild:
+	@cd ${top_builddir} && $(MAKE) $(AM_MAKEFLAGS)
+
+.PHONY: .maybe_rebuild
+
+#######
+
+files/.stripped: files/.prepared
+	@for f in $(PKG_BINDIR)/* $(PKG_LIBDIR)/*; do \
+		if [ -f "$$f" ]; then \
+			{ chmod u+w "$$f" && touch -r "$$f" "$$f.timestamp" && $(STRIP) $(PKG_STRIPOPTS) "$$f" && touch -r "$$f.timestamp" "$$f"; } || exit 1; \
+			rm -f "$$f.timestamp"; \
+		fi; \
+	done
+	@touch $@
+	
+$(PKG_DOCDIR)/$(PKG_EULA): ${top_srcdir}/$(PKG_EULA)
+	@$(MKDIR_P) $(PKG_DOCDIR)
+	@cp -v "$<" "$@"
+	
+$(PKG_DOCDIR)/NEWS: ${top_srcdir}/NEWS
+	@$(MKDIR_P) $(PKG_DOCDIR)
+	@cp -v "$<" "$@"
+
+clean-local:
+	-rm -rf $(PKG_DESTDIR) $(PKG_CLEAN)
+
+
+

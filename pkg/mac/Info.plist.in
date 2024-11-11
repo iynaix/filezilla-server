@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>filezilla-server-gui</string>
+	<key>CFBundleGetInfoString</key>
+	<string>@PACKAGE_STRING@, Copyright (C) 2004-2021  Tim Kosse, Website: https://filezilla-project.org</string>
+	<key>CFBundleIconFile</key>
+	<string>filezilla-server-gui.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.filezilla-project.filezilla-server@CFBUNDLEIDSUFFIX@</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleLongVersionString</key>
+	<string>@PACKAGE_STRING@</string>
+	<key>CFBundleName</key>
+	<string>FileZilla</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>@PACKAGE_VERSION_SHORT@</string>
+	<key>CFBundleSignature</key>
+	<string>FzSv</string>
+	<key>CFBundleVersion</key>
+	<string>@PACKAGE_VERSION_SHORT@</string>
+	<key>CSResourcesFileMapped</key>
+	<true/>
+	<key>LSRequiresCarbon</key>
+	<true/>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright (C) 2004-2021  Tim Kosse</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>MacOSX</string>
+	</array>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.13</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<key>NSRequiresAquaSystemAppearance</key>
+	<string>YES</string>
+</dict>
+</plist>

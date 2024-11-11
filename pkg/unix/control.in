@@ -1,0 +1,30 @@
+Package: @PACKAGE@
+Version: @PACKAGE_VERSION@
+Architecture: @DEB_TARGET_ARCH@
+Maintainer: @PACKAGE_BUGREPORT@
+Section: net
+Priority: optional
+Homepage: https://filezilla-project.org/
+Description: Free and open source FTP and FTPS Server.
+ @PACKAGE@, starting from version 1.x, represents a complete rewrite
+ of the historical FileZilla FTP server.
+ .
+ Key features include:
+   - Support for FTP and secure FTPS protocols
+   - Support for TLS 1.3 and enforcment of session resumption
+   - Direct support for Let's Encrypt (TM) TLS certificates generation
+   - Support for PKCS#11 secure tokens
+   - Advanced user management to control access and permissions
+   - Support for passive mode connections through NAT and firewall
+   - Detailed logging for monitoring server activity and troubleshooting
+   - Configurable transfer speed limits to balance server load
+   - Remote administration capabilities for managing the server from anywhere
+ .
+ The server's architecture is built with security and portability in mind,
+ catering to both novice and advanced users who need a dependable FTP/FTPS
+ server solution. The project actively incorporates feedback and continues
+ to evolve, ensuring compatibility with modern security standards and client
+ requirements.
+ .
+ For more information, documentation, and support, visit the official FileZilla
+ project website: https://filezilla-project.org/

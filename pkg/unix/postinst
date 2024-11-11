@@ -1,0 +1,133 @@
+#!/bin/sh
+set -e
+
+TMPDIR=$(mktemp -d)
+trap 'rm -rf -- "$TMPDIR"' EXIT
+
+check_config_versions() {
+	local mode="$1"
+	local res=$(mktemp --tmpdir config-version-check-result-XXXXXXX.txt)
+	
+	# Empty file
+	: > "$res"
+	
+	# Check existing config file versions
+	/opt/filezilla-server/bin/filezilla-server --config-dir /opt/filezilla-server/etc --config-version-check "$mode" --config-version-check-result-file "$res" || true
+		
+	read line < "$res"
+	case "$line" in
+		ok|error|backup)
+			echo "$line"
+			;;
+		"")
+			echo "check_config_version: cannot read result of the configuration version check, something is wrong. Aborting." >&2
+            rm -f "$res"
+			exit 1
+			;;
+		*)
+			echo "check_config_version: cannot understand the result of the configuration version check, something is wrong. Aborting." >&2
+            rm -f "$res"    
+			exit 1
+			;;
+	esac
+
+    rm -f "$res"
+}
+
+if [ -e /usr/share/debconf/confmodule ]; then
+	. /usr/share/debconf/confmodule
+
+	version_check=$(check_config_versions error)
+	if [ "$version_check" = "error" ]; then
+		db_input critical filezilla-server/config-version-error
+		db_go
+		db_get filezilla-server/config-version-error
+		do_backup="$RET"
+		db_unregister filezilla-server/config-version-error		
+		
+		if [ "$do_backup" != "true" ]; then
+			exit 1
+		fi
+			
+		version_check=$(check_config_versions backup)
+		if [ "$version_check" != "backup" ]; then
+			exit 1
+		fi
+	fi
+
+	db_get filezilla-server/default-impersonator-user
+	IMPERSONATOR_USER="${RET}"
+
+	db_get filezilla-server/default-impersonator-group
+	IMPERSONATOR_GROUP="${RET}"
+
+	db_get filezilla-server/admin-password
+	password="$RET"
+
+	db_get filezilla-server/listen-on-all-interfaces
+	listen_on_all_interfaces="$RET"
+
+    admin_local_port=14148
+
+	db_unregister filezilla-server/admin-password
+	db_unregister filezilla-server/no-admin-password-provided
+    db_unregister filezilla-server/admin-password-is-weak
+    db_unregister filezilla-server/listen-on-all-interfaces
+
+	if [ -n "${IMPERSONATOR_USER}" ]; then
+		default_impersonator_enabled=true
+		
+		if ! getent passwd "${IMPERSONATOR_USER}" > /dev/null 2>&1; then
+			adduser --system --no-create-home --home /nonexistent --quiet --gecos 'FileZilla Server default system user' --group ${IMPERSONATOR_USER}
+		elif ! getent group "${IMPERSONATOR_USER}" > /dev/null 2>&1; then
+			addgroup --system --quiet ${IMPERSONATOR_USER}
+			gpasswd -a ${IMPERSONATOR_USER} ${IMPERSONATOR_USER}
+		else
+			echo "FileZilla Server default system user (${IMPERSONATOR_USER}) already exists, doing nothing." >&2
+		fi
+		
+		if [ -n "${IMPERSONATOR_GROUP}" ] && [ "${IMPERSONATOR_USER}" != "${IMPERSONATOR_GROUP}" ]; then
+			if ! getent group "${IMPERSONATOR_GROUP}" > /dev/null 2>&1; then
+				addgroup --system --quiet ${IMPERSONATOR_GROUP}
+			fi
+			
+			gpasswd -a ${IMPERSONATOR_USER} ${IMPERSONATOR_GROUP}
+		fi
+	else
+		default_impersonator_enabled=false
+	fi
+	
+	# Is it first time install?
+	if [ "$1" = "configure" ] && [ -z "$2" ]; then
+		do_update=true
+	else
+	# Or is reconfiguring?
+		db_get filezilla-server/x-reconfiguring
+		if [ "$RET" = "true" ]; then
+			do_update=true
+			db_set filezilla-server/x-reconfiguring false
+		
+			deb-systemd-invoke stop filezilla-server
+		fi
+	fi
+	
+	if [ "$do_update" = "true" ]; then
+        admin_listeners_params="--admin.local_port=$admin_local_port"
+
+        if [ "$listen_on_all_interfaces" = "true" ]; then
+            admin_listeners_params="$admin_listeners_params --admin+listener.address=0.0.0.0 --admin.listener.port=$admin_local_port"
+            admin_listeners_params="$admin_listeners_params --admin+listener.address=:: --admin.listener.port=$admin_local_port"
+        fi
+
+		password_params=$(echo "$password" | /opt/filezilla-server/bin/filezilla-server-crypt admin.password)
+		impersonator_params="--default_impersonator@index=1 --default_impersonator@enabled=${default_impersonator_enabled} --default_impersonator.name=${IMPERSONATOR_USER} --default_impersonator.group=${IMPERSONATOR_GROUP}"
+		logger_params="--logger.enabled_types:=15 --logger.include_headers:=false"
+		
+		/opt/filezilla-server/bin/filezilla-server $admin_listeners_params $password_params $impersonator_params $logger_params --config-dir /opt/filezilla-server/etc --write-config 2>/dev/null >&2
+	fi
+fi
+
+deb-systemd-invoke enable filezilla-server
+deb-systemd-invoke start filezilla-server
+deb-systemd-invoke status --no-pager -l filezilla-server
+

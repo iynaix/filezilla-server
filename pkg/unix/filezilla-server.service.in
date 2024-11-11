@@ -1,0 +1,11 @@
+[Unit]
+Description=A free open source FTP and FTPS Server.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/opt/filezilla-server/bin/filezilla-server --config-dir /opt/filezilla-server/etc @DEB_EXECSTART_WEBUI_ROOT@
+ExecReload=kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

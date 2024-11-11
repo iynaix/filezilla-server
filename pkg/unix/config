@@ -1,0 +1,113 @@
+#!/bin/sh
+set -e
+
+must_configure=false
+
+if ! [ -e /usr/share/debconf/confmodule ]; then
+	exit 0
+fi
+
+. /usr/share/debconf/confmodule
+
+# Is it first time install?
+if [ "$1" = "configure" ] && [ -z "$2" ]; then
+	true
+# Or is it reconfiguring?
+elif [ "$1" = "reconfigure" ]; then
+	db_set filezilla-server/x-reconfiguring true
+else
+# If none of the above, just exit
+	exit 0
+fi
+
+is_password_weak() {
+    echo "ENTER is_password_weak"
+
+    local pwd="$1"
+
+    # Check length
+    if [ "${#pwd}" -lt 12 ]; then
+        return 0
+    fi
+
+    local special_flag=0
+    local num_flag=0
+    local upper_flag=0
+    local lower_flag=0
+
+    while [ -n "$pwd" ]; do
+        # Extract the first character
+        local char=${pwd%"${pwd#?}"}
+
+        # Process the extracted character
+        case "$char" in
+            [\!-/]|[:-@]|[[-\`]|[\{-~]) 
+                special_flag=1
+                ;;
+            [0-9])
+                num_flag=1
+                ;;
+            [A-Z])
+                upper_flag=1
+                ;;
+            [a-z])
+                lower_flag=1
+                ;;
+            *)
+                ;;
+        esac
+
+        # Remove the first character from the string
+        pwd=${pwd#?}
+    done
+
+    # Final evaluation
+    [ $special_flag -eq 0 ] || [ $num_flag -eq 0 ] || [ $upper_flag -eq 0 ] || [ $lower_flag -eq 0 ]
+    local ret=$?
+    echo "EXIT is_password_weak: " $ret
+    return $ret
+}
+
+while true; do
+	db_input high filezilla-server/admin-password || true
+	db_go || true
+
+	db_get filezilla-server/admin-password
+    
+	if [ -z "$RET" ]; then
+		if db_input high filezilla-server/no-admin-password-provided; then
+			db_go || true	
+			db_get filezilla-server/no-admin-password-provided
+            if [ "$RET" = "false" ]; then
+                continue;
+            fi
+		fi
+	elif is_password_weak "$RET"; then
+		if db_input high filezilla-server/admin-password-is-weak; then
+			db_go || true	
+			db_get filezilla-server/admin-password-is-weak
+            if [ "$RET" = "false" ]; then
+                continue;
+            fi
+		fi
+	fi
+    
+    break
+done
+
+db_get filezilla-server/admin-password
+if [ -n "$RET" ]; then
+    db_input high filezilla-server/listen-on-all-interfaces || true
+    db_go || true
+fi
+
+db_input medium filezilla-server/default-impersonator-user || true
+db_go || true
+
+db_get filezilla-server/default-impersonator-user
+if [ -n "$RET" ]; then
+	db_input medium filezilla-server/default-impersonator-group || true
+	db_go || true
+fi
+
+

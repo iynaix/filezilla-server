@@ -1,0 +1,6 @@
+#ifndef FZ_PREPROCESSOR_EXPAND_HPP
+#define FZ_PREPROCESSOR_EXPAND_HPP
+
+#define FZ_PP_EXPAND(to_expand) to_expand
+
+#endif // FZ_PREPROCESSOR_EXPAND_HPP

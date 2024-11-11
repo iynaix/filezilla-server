@@ -1,0 +1,10 @@
+#! /bin/sh
+
+cp "/Applications/@PACKAGE_NAME@.app/Contents/Resources/org.filezilla-project.filezilla-server.service.plist" /Library/LaunchDaemons
+mkdir -p /Library/Preferences/org.filezilla-project.filezilla-server.service
+
+launchctl bootstrap system /Library/LaunchDaemons/org.filezilla-project.filezilla-server.service.plist
+launchctl enable system/org.filezilla-project.filezilla-server.service
+launchctl kickstart system/org.filezilla-project.filezilla-server.service
+
+true

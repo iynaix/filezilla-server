@@ -1,0 +1,6 @@
+SUBDIRS = \
+    configconverter \
+    crypt \
+    impersonator
+
+

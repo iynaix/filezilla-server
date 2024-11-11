@@ -1,0 +1,352 @@
+Legend:
+  ! Security related bugfix or otherwise critical bugfix
+  + New feature or important bugfix
+  - Bugfixes and other changes
+
+1.9.3 (2024-10-16)
+
+- Fixed a regression causing the automatic renewal of the Let's Encrypt® certificates to not work properly.
+- UI: fixed regression causing the Administration Interface port of the last successful connection to not be properly restored.
+- UI: fixed a bug where the TLS key appeared to be lost in the interface if certificate generation failed, even though the key was still retained on the server.
+
+1.9.2 (2024-09-30)
+
+- Fixed an issue with the update mechanism
+
+1.9.1 (2024-09-09)
+
+- Fixed a regression introduced in 1.9.0, the "public IP or hostname" field on the passive mode page was not restored when opening the settings dialog
+
+1.9.0 (2024-09-05)
+
+! MSW: Warn if installing the server outside of Program Files due to custom directories having too lax permissions
+- Fixed a race condition resulting in stalled connections
+- *nix: Fixed a potential crash if SIGINT is sent to the server while it is shutting down
+- Fixes to the update check mechanism
+- Fixed a regression in the converter for old 0.9.x configurations dealing with placeholders in native paths
+
+1.9.0-rc1 (2024-08-07)
+
++ Private keys used for TLS can now be stored on a PKCS#11-compatible token device; the UI has been updated accordingly.
++ UI: added button to retrieve the current FileZilla Server's public IP address, useful to configure the PASV mode.
++ UI: added an FTP connection test, that can be reached directly from the Server menu item or executed at the end of the FTP Network Configuration Wizard.
++ Made default values more secure, among which: require TLS on new FTP listeners, require a password for new users and warn if the administration password doesn't meet more stringent security requirements.
++ Fixed bug causing the most recent log file, rather than the oldest, to be deleted upon rotation, when using dates as suffixes.
++ MSW: fixed regression causing socket listener conflicts due to recent libfilezilla changes.
++ Added WebUI: an HTTP server providing a REST API and a web app for seamless web access to stored files. WebUI is not included in the default build and must be enabled with the --enable-webui parameter during compilation. This feature is experimental; feedback and bug reports are welcome.
+- UI: the certificate fingerprint verification dialog is now sized to display the full fingerprint at once.
+- UI: fixed bug causing the focus to be lost during user editing.
+- UI: fixed bug causing the tray icon to display unexpectedly in certain cases.
+- UI: improved error handling in case of server disconnection.
+- UI: improved handling of Settings window size on ultra wide screens.
+- FTP: the MKD command now returns an error if the directory already exists.
+- FTP: Improved login timeout handling to exclude internal server processing time.
+- Fixed heap corruption in the Administrator Interface.
+- Fixed regression in the path handling routines.
+
+1.8.2 (2024-04-25)
+
+! FileZilla Server now requires that the configuration directory is owned either by the operating system user account the server runs under, or a more privileged user (SYSTEM, Amdministrators, TrustedInstaller on Windows, root elsewhere)
+! MSW: Mount points are now case-insensitive so that restrictions on sub mounts cannot be bypassed by a change of character case
+- Fixed a potential deadlock during transfers
+- FTP: Fixed potential crash if the session gets closed
+
+1.8.1 (2024-01-24)
+
++ Limits to the number of active sessions defined for the groups now apply to the group as a whole, not just to the individual users belonging to those groups.
++ Fixed bug that led to timeouts not being set at startup, but only when changing the configuration.
+- FTP Server: NLST would report a file names with a leading ./ path in certain cases, which confused some clients. Fixed.
+- UI: Fixed bug that caused the Administration Interface to misinterpret native paths in the mount lists in case the server were running on a machine with different path semantics than the Administration Interface's one.
+- UI: fixed regression that led to some message dialogs not being displayed.
+- Fixed regression that caused disabled mount points with empty native paths to be discarded.
+- Fixed conversion to utf8 of virtual paths, which was wrongly misinterpreting some native encodings.
+- In case of login failure, the login timeout resumes counting down for the remaining time.
+
+1.8.0 (2023-12-11)
+
+- The autoban feature no longer bans clients with correct credentials that cannot log in due to exeeded connection limits
+- Report correct timestamps of mount points in directory listings
+- Fixed regression introduced in 1.8.0 resulting in "Do not require authentication" not working
+
+1.8.0-rc2 (2023-11-16)
+
+! Fixed regression related to path handling
+! Fixed off-by-one buffer overflow in handling of IPV6 addresses.
++ Admin UI: sessions IPs and user names can now be independently copied into the clipboard.
++ Added option to disable the automatic renewal of Let's Encrypt certificates.
+- Fixed bug in the updater that caused it to report new beta releases even if explictly told not to.
+- User-provided certificates are now tested before being applied, so that the server always stays in a functioning state
+- Fixed potential issues in the impersonator process
+
+1.8.0-rc1 (2023-09-04)
+
++ The number of open files, directories and sessions can now be limited, both on a group and user basis. The functionality is accessible via the "Limits" tab in the groups and users configuration panes.
++ Implemented a new syntax for the placeholders to be used in the mount list native paths. ":u" becomes "%<user>" and ":h" becomes "%<home>". Usage documentation has been added within the Administration Interface and can be accessed from a link below the mount table editor.
++ Admin UI is now built against wxWidgets 3.2
+- More explanatory logging in case of errors when reloading the configuration
+- MSW: Installer fixes for silent installation
+
+1.7.3 (2023-09-11)
+
+! Fixed a security vulnerability introduced in 1.7.0-rc1, update urgently recommended.
+
+1.7.2 (2023-06-06)
+
+- Fixed handling of the "processing" order status when creating Let's Encrypt certificates
+- Fixed an issue with sessions getting kicked if settings were applied
+
+1.7.1 (2023-05-26)
+
+- UI: Fixed session list rendering issues on Windows
+- Banning an IP now also automatically kicks sessions with that IP
+
+1.7.0 (2023-05-10)
+
+- Additional updater improvements
+- Validate passive mode port ranges, it is now an error if the range overlaps any of the regular listeners
+
+1.7.0-rc2 (2023-04-28)
+
+- Small updater improvements
+- Print error message in log if hostname lookup fails while preparing data connection for passive mode
+- Fixes for login request throttler
+
+1.7.0-rc1 (2023-04-24)
+
++ Implemented automatic checking of the availability of new releases, configurable via Configuration dialog in the Administration Interface.
+- The log file now contains the flavour and version number at the top
+- UI: the listeners are now easier to edit and navigate through.
+
+1.6.7 (2023-02-20)
+
+- Fixed logging level in the Administration Interface settings dialog initially always showing Debug
+- Fixed a crash due to missing synchronization when adding authentication workers
+- Updated to GnuTLS 3.8.0
+
+1.6.6 (2023-02-01)
+
+- Fixed crash if throttled authentications were cancelled
+
+1.6.5 (2023-01-22)
+
+- Fixed a regression with the RNFR command
+
+1.6.4 (2023-01-18)
+
+- Fixed a deadlock if sessions destroyed during ongoing authentication
+- Fixed issues with the ABOR command
+- Fixed a crash in the converter for old 0.9.x configurations
+
+1.6.1 (2022-12-07)
+
+- MSW: Fixed an installation issue due to a service handle not being closed
+
+1.6.0 (2022-12-06)
+
++ UI: it's now possible to upload TLS certificates to the server directly from the UI, using a specific selector in the Security page of the protocols configuration.
++ UI: the maximum amount of characters in all text controls has been limited to a sensible number, so to avoid potential crashes or stalls in corner cases. 
+- Fixed potential issues with locking of mutexes in the administration protocol
+- MSW: the installer now works properly also if the uninstaller from a previous installation has been deleted.
+- Fixed an issue in the networking code when dealing with TLS close_notify alerts. 
+
+1.6.0-rc1 (2022-11-28)
+
++ MSW: the installer now offers to keep the existing service configuration of a previously installed FileZilla Server whose release must be above or equal to 1.6.0.
++ UI: the main window position and size is now remembered across different runs.
++ UI: the server configuration can now be exported to a file and imported into another server. It is possible to select the specific parts of the configuration that are to be exported or imported.
++ UI: double-clicking on a item in the session list will pop up a dialog with security information about the session. The functionality can be also accessed via the context menu.
++ UI: file dialogs now remember the last used folder
+- UI: users' group names are now sorted, with the active ones up in the list
+- UI: Clearly show when a session transfer is stalled
+- UI: it is now possible to cut/copy/paste numbers in the specific controls.
+- UI: Fixed various incoherencies in the state of the interface
+- UI: it is no longer possible to have the administration listeners conflict with the file transfer protocols servers listeners. In case of pre-existing conflicts in the configuration file, the administration listeners take precedence, so that it is still possible to change the FileZilla Server's configuration.
+- UI: in some corner cases concurrently opening dialogs could cause instabilities. These dialogs are now queued up and opened sequentially.
+- *nix: fixed dependencies in the Debian installer
+- *nix: fixed installation directory of the icons
+- Fixed a crash on network errors while renewing Let's Encrypt certificates
+- MSW: Communication with the impersonator child process no longer stalls or fails under heavy load
+- User-specific impersonation is now working again
+
+1.5.1 (2022-07-29)
+
+- Fixed a crash if a session is closed and the data connection receives a connection error at the same time
+- MSW: The notification area icon now displays again in all display scale factors
+- Admin UI: Fixed switching from "Use system credentials to log in" to "Require a password to log in" not applying
+
+1.5.0 (2022-07-20)
+
+- Admin UI: Connection dialog did not remember the last used port if there are multiple saved entries for the same hostname with different ports
+
+1.5.0-rc1 (2022-07-12)
+
++ Server: Implemented throttling of login attempts in case of too many failed attempts. 
++ Server: The version number in the welcome message can now be manually suppressed by setting the "has_version" attribute of the message field in the configuration file to "false".
++ MSW: If the service is running under the SYSTEM account, configuration files are now placed under %PROGRAMDATA%\filezilla-server. This is to workaround the issue that when doing a Windows Update the settings could be wiped out. Settings still residing under %LOCALAPPDATA%\filezilla-server are automatically migrated.
++ Communication with the impersonator child process is now asynchronous
++ Admin UI: The password fields in the configuration dialog now shows a hint to inform the user about how to keep the existing password
+- Admin UI: Fixed a crash in listener editor
+- Admin UI (macOS): Implemented workarounds for some wxWidgets glitches and malfunctions.
+- Admin UI: The system_user's name cannot be edited anymore (rightly so)
+- Configuration data that cannot be serialized now prevents an incomplete output file from being written to disk
+- Sudden deaths of the impersonator process no longer cause unintended behavior
+- Fixed server crashes due to unexpected socket events in some corner cases
+- MSW: Due to a toolchain issue, programs making use of thread-local variables would crash on exit. Implemented a workaround, until it gets addressed by future MinGW toolchains
+- The number of possible worker threads has been reduced to a maximum of 256
+- FTP Server: The NLST command now reports paths compliant with RFC 1123
+- When using the command line parameter --config-version-check ignore, the expected version is now written to the settings files if a mismatch is detected
+- *nix: Logo icons are no longer embedded in the executables, they are instead installed to the proper system paths
+- *nix: Added a filezilla-server-gui.desktop file, so that the Admin UI can easily be opened by desktop environments
+- Maximum number of log file rotations has been reduced to a more sensible amount and the rotation algorithm has been changed to be more efficient
+
+1.4.1 (2022-05-06)
+
+- Admin UI: Fixed a crash on the listener page
+- Admin UI: Improved workflow for changing user passwords
+- MSW: Fixed an issue with the converter for configurations from FileZilla Server 0.9.x
+
+1.4.0 (2022-04-29)
+
+- Debian: by default the service is now configured to exclude headers from log lines, since journald outputs its own headers already.
+- Mac: fixed regression that made the installed service not startable
+- Admin UI: changed wording in the logging settings
+- Admin UI: made default connection values correct, in case the settings file is missing.
+- MSW: fixed various bug in the ExecDos plugin, that could cause the admin password not to be set properly.
+- MSW: non-ASCII admin passwords can now be properly used.
+- MSW: fixed a bug in libfilezilla that caused an unexpected failure when creating directories with restricted access. It had effects on the ACME account creation. 
+
+1.4.0-rc1 (2022-04-20)
+
+! MSW: the installer doesn't rely on the PATH environment variable to find the tools it needs, but refers to them absolutely, to avoid hijacking.
++ The size of the TCP buffer sizes on the sockets used for data transfers can now be specified
++ Configuration files are now tagged with a "flavour" and a version number. The Server will refuse to load configuration files with a different flavour than its own or with a version higher than its own. The server's option --config-version-check can be used to control this functionality: if specified, the server checks the versioning, performs the required action and then exit, unless its action is 'ignore'. If the action is 'error', it just checks whether the versions are ok. If the action is 'backup', then a backup of the files is made if the versions are not ok. The parameter --config-version-check-result-file is used to specify a file in which the result of the version check has to be put. If the file contains 'ok', then everything went file. If the file contains 'error', then there was an error. If the file contains 'backup', then a backup was made. The installer makes use of this functionality.
++ Admin UI: the selected log entries can now be copied to the clipboard, in CSV, HTML and plaintext formats through the context menu
++ Admin UI: the settings dialog layout has been changed to accomodate for future other protocol settings, factoring out the settings that are common to all protocols.
++ Admin UI: adjusted borders and spacing to look better on HiDPI displays.
++ Admin UI: preserve the fingerprints of the previously connected servers. The connection dialog gives hints when inputing the host and port.
++ Log files can optionally be rotated daily instead of by size
++ Added option to specify a default user to impersonate if a user logs in with an account that does not use impersonation
+- MSW: The installer not detects and rejects 32bit Windows
+- MSW, Admin UI: No more double error message when a validation error occurs
+- Admin UI: Solved a crash and fixed other bugs related to minimzing the main window to the notification area
+- Server: --write-config option now also updates the users and groups configuration files
+- Server: the log contains more detailed info about which configuration files have been saved
+- Admin UI: the controller used for editing numbers now correctly accepts negative integers
+- The network config wizard's text has been updated to be more explanatory and intuitive
+- Self signed certificates don't require a 2nd level domain anymore
+- Admin UI: the system user is now always at the top
+- Admin UI: more meaningful message if the password is empty
+- Admin UI: message dialogs now always have a reference to the top window
+- FTP: QUIT needs to respond with 221, not 200
+- Bug fixes to the internal HTTP library
+- MSW: the installer now correctly displays the progress bar in all cases
+- Fixed a confusing error message in some situations if trying to list non-existing directories
+- Admin UI: fixed regression that caused the progress bar not to show on downloads from the server.
+
+1.3.0 (2022-02-14)
+
++ Configuration wizard to setup passive mode
++ Linux: Warn if sysctl knob kernel.yama.ptrace_scope is 0
++ Linux: Refuse to run if sysctl knob fs.protected_hardlinks is 0
+- Admin UI: Rejecting a certificate fingerprint prompt no longer triggers automatic reconnects
+
+1.3.0-rc1 (2022-02-03)
+
+! The internal tool filezilla-server-crypt now accepts the password from stdin, not anymore as a parameter, to avoid password leaking.
+! Mountpoints are now impossible to rename or delete.
++ The configuration files can now be reloaded without shutting down the service first. To make it work, send the SIGHUP signal to the service process on nix, send the paramchange control message to the service on Windows (i.e. 'sc control filezilla-server paramchange').
++ The UI now automatically attempts to reconnect to the server if the connection is lost
++ MSW: users are now case-insensitive
++ Mac: created an installer
++ Display the administration TLS certificate fingerprints at installation time, so that they can be taken note of.
++ Negotiate custom ALPN with FileZilla Client, this allows saving a few round-trips during connection establishment
+- Warn if no administration password has been given during installation.
+- In TVFS, fixed implicit root "/" not being accessible, trac #12617.
+- In TVFS, an implicit mountpoint whose parent is non-recursive is now able to be listed and cwd'd into.
+- Solved off-by-one bug in path normalization. 
+- Reported filesystem errors are permanent, hence use 5yz error codes rather than 4yz error codes in command replies.
+- Permissions are now correctly updated in the UI when the current selected user changes.
+- Fixed regressions in the UI related to the TLS certificates generation.
+- MSW: the installer now correctly support the /D parameter, used to define a different default installation directory from the command line.
+- Debian: the installer now asks for an administration password.
+- Errors during ACME certificates generation are now properly displayed in the UI.
+
+1.2.0 (2021-12-23)
+
+- Small usability changes to setting up Let's Encrypt certificates
+
+1.2.0-rc1 (2021-12-18)
+
++ Created Debian and macOS packages
++ Introduced more finegrained access controls for the mountpoints
+- MSW: Disallow files and directories ending on space or dot
+- If a user gets disabled, corresponding sessions are now kicked
+- Let's Encrypt certificates are now only renewed if in use.
+- The UI now lets you edit users info even if they're disabled.
+- Fixed support for UNC pathames on Windows
+- Fixed a few regressions
+- Autoban now shares state across login sessions, which makes it work as intended.
+- The UI now clearly shows in the log whenever it has connected with the FileZilla FTP server.
+
+1.1.0 (2021-10-29)
+
+! MSW: Fixed directory traversal vulnerability
+- MSW: Fixed installer getting stuck if not installing all components
+- MSW: Instlaller enables minidump for executables
+- Fixed CIDR parsing
+- Fixed potential crash if a transfer gets aborted
+
+1.1.0-beta1 (2021-10-19)
+
++ User impersonation, FileZilla Server can now optionally let users log in using the credentials of system accounts and use their filesystem permissions
++ Added description field to users and groups
++ Added enable checkbox to users
++ Status bar in administration UI now shows connection status
+- Logging fixes
+- Fixes to auto-ban logic
+- Fixed crash if changing users during ongoing directory listings
+
+1.0.1 (2021-09-20)
+
++ Log messages in the administration interface are now colored using the same scheme as FileZilla client's and automatically scroll down unless the user decides otherwise.
+- The Windows installer no longer disrupts logging settings from previous installations
+- Fixed a bug that would cause failed transfers in certain conditions
+- Fixed display of vowels with umlauts and other non-ASCII characters in the groups selection for users in the administration interface
+- Fixed assorted crashes
+- Fixed possible race conditions
+
+1.0.0 (2021-09-14)
+
++ Support for Let's Encrypt and other certificate providers using ACME
++ Improved display of log messages in the administration interface
+- Changed session ticket/PSK generation when using TLS 1.3, new tickets are now only sent on the control connection
+- Changes to settings such as passive mode ports now affect connected sessions
+- Deleting a user now affects connected sessions logged in as that user
+- Fixed assorted crashes
+
+1.0.0-rc5 (2021-07-28)
+
+- Fixed passive mode port settings
+- Minumum allowed TLS version is now 1.2, added configuration option to restrict it further to 1.3
+- Fixed progress display during uploads to the server
+
+1.0.0-rc4 (2021-07-19)
+
++ Admin UI: Added checkbox to connect dialog to automatically connect at start
++ Admin UI: Added menu item to start interface minimized
++ Fixed data from a failed download being prepended to a subsequent download
+- Admin UI: Display additional certificate information such as SANs and subject DN.
+- Admin UI: Simplified selection of log levels
+- Onboarding: After first installing the server, it listens on port 21 by default
+
+1.0.0-rc3 (2021-07-12)
+
+- Changed permissions of created settings and log files and directories, they now also grant Windows' built-in Administrators group full access. Does not change existing files from previous versions.
+
+1.0.0-rc2 (2021-07-05)
+
+- Fixed a crash in the converter for old configurations
+
+1.0.0-rc1 (2021-07-01)
+
++ Initial distribution of the new FileZilla Server

@@ -1,0 +1,15 @@
+#! /bin/sh
+
+if [ "${COMMAND_LINE_INSTALL}" = "" ]; then
+  if [ "${SUDO_USER}" != "" ]; then
+    uid=`id -u "${SUDO_USER}"`
+  else
+    uid=`id -u "${USER}"`
+  fi
+  if [ "$uid" != "" ]; then
+    echo Pre uid: $uid 
+    launchctl asuser $uid open /Applications/FileZilla\ Server.app
+  fi
+fi
+
+true

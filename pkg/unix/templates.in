@@ -1,0 +1,66 @@
+Template: filezilla-server/admin-password
+Type: password
+Default:
+Description: Please input the administrator password:
+ An administration password is highly suggested, to protect your system from the risk that any users or program that has access to it could make changes to @PACKAGE_NAME@ and potentially gain root privileges.
+ .
+ Leave it blank if you really don't want to use a password, but in that case you'll not be able to administer @PACKAGE_NAME@ remotely. 
+
+Template: filezilla-server/no-admin-password-provided
+Type: boolean
+Default: false
+Description: Do you still want to proceed without an administration password?
+ No administration password has been provided, this is dangerous.
+ .
+ Without an administration password, any user and any program on your computer will be able to make changes to @PACKAGE_NAME@ and potentially gain root privileges on the machine @PACKAGE_NAME@ is running on.
+
+Template: filezilla-server/admin-password-is-weak
+Type: boolean
+Default: false
+Description: Do you wish to proceed with a password that does not meet the recommended security criteria?
+ The chosen password does not meet the recommended security criteria.
+ .
+ For optimal security, your password should include the following:
+ .
+   1. A minimum length of 12 characters.
+   2. At least one numeral (0-9).
+   3. At least one special character (e.g., !, @, #, $$).
+   4. At least one uppercase letter (A-Z).
+   5. At least one lowercase letter (a-z).
+ .
+ Consider using a sequence of words or a sentence, as it can be both secure and memorable.
+
+Template: filezilla-server/listen-on-all-interfaces
+Type: boolean
+Default: false
+Description: Allow administration connections on all network adapters?
+ Selecting this option will allow for remote administrations.
+
+Template: filezilla-server/default-impersonator-user
+Type: string
+Default: ftp
+Description: Please input the system account name for accessing files and directories (leave empty to not make use of this functionality):
+ @PACKAGE_NAME@ can make use of a system account to provide access to the file system, to those users who log in without system credentials or without explicitly using their system credentials to access files and directories. 
+ .
+
+Template: filezilla-server/default-impersonator-group
+Type: string
+Default:
+Description: Please input the system group name for accessing files and directories (leave empty to make use of the default one):
+ @PACKAGE_NAME@ can make use of a system group to provide access to the file system, to those users who log in without system credentials or without explicitly using their system credentials to access files and directories. 
+ .
+
+Template: filezilla-server/x-reconfiguring
+Type: boolean
+Default: false
+Description: for internal use
+
+Template: filezilla-server/config-version-error
+Type: boolean
+Default: false
+Description: Do you want to make a backup of the files? Choosing No will abort the installation.
+ One or more existing configuration files belong to a version of @PACKAGE_NAME@ which is not guaranteed to be compatible.
+ .
+ @PACKAGE_NAME@ can still load them up, but some information might be lost.
+ .
+

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file was created by NSISDialogDesigner 1.5.0.0
+https://coolsoft.altervista.org/nsisdialogdesigner
+Do not edit manually!
+-->
+<Dialog Name="AdminSettings" Title="Admin Settings" Subtitle="${PACKAGE_NAME}'s administration interface settings" GenerateShowFunction="False">
+  <HeaderCustomScript>!include "adminsettings.extra.nsh"</HeaderCustomScript>
+  <CreateFunctionCustomScript>Call fnc_AdminSettings_OnCreate</CreateFunctionCustomScript>
+  <Label Name="HowToStartLabel" Location="0, 1" Size="450, 20" Text="$(S_AdminSettings_ChooseHowToStart)" TabIndex="0" />
+  <DropList Name="HowToStart" Location="0, 25" Size="450, 21" TabIndex="1" />
+  <CheckBox Name="StartCheck" Location="0, 52" Size="450, 20" Text="$(S_AdminSettings_StartCheck)" Checked="True" TabIndex="2" />
+</Dialog>

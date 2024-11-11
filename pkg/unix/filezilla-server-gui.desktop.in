@@ -1,0 +1,20 @@
+[Desktop Entry]
+Name=FileZilla Server Administration
+GenericName=Administration interface for FileZilla Server
+GenericName[it]=Interfaccia di amministrazione di FileZilla Server
+Comment=Change FileZilla Server settings, add and remove users and groups, monitor the sessions and the data flow
+Comment[it]=Gestisci i settaggi di FileZilla Server, aggiungi e rimuovi utenti e gruppi, monitora le sessioni e i flussi di dati
+
+Version=@PACKAGE_VERSION@
+
+Type=Application
+Categories=Network;FileTransfer
+Keywords=network;file;transfer;ftp;ftps;server;
+Keywords[it]=networking;file;trasferimento;ftp;ftps;server;
+
+Exec=/opt/filezilla-server/bin/filezilla-server-gui
+TryExec=/opt/filezilla-server/bin/filezilla-server-gui
+Terminal=false
+StartupNotify=true
+
+Icon=/opt/filezilla-server/share/icons/hicolor/scalable/apps/filezilla-server-gui.svg

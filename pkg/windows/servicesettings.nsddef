@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file was created by NSISDialogDesigner 1.5.0.0
+https://coolsoft.altervista.org/nsisdialogdesigner
+Do not edit manually!
+-->
+<Dialog Name="ServiceSettings" Title="Server settings" Subtitle="${PACKAGE_NAME} service settings" GenerateShowFunction="False">
+  <HeaderCustomScript>!include "servicesettings.extra.nsh"</HeaderCustomScript>
+  <CreateFunctionCustomScript>Call fnc_ServiceSettings_OnCreate</CreateFunctionCustomScript>
+  <RadioButton Name="RunAsOtherUser" Location="0, 94" Size="450, 20" Text="$(S_ServiceSettings_RunAsOtherUser)" TabIndex="0" onClick="fnc_ServiceSettings_RunAsChanged" />
+  <RadioButton Name="RunAsSystem" Location="0, 73" Size="450, 20" Text="$(S_ServiceSettings_RunAsSYSTEM)" TabIndex="1" onClick="fnc_ServiceSettings_RunAsChanged" />
+  <CheckBox Name="StartCheck" Location="0, 52" Size="450, 20" Text="$(S_ServiceSettings_StartCheck)" Checked="True" TabIndex="2" />
+  <DropList Name="HowToInstallAndStart" Location="0, 25" Size="450, 21" TabIndex="3" onChange="fnc_ServiceSettings_HowToInstallAndStartChanged" />
+  <Label Name="HowToStartLabel" Location="0, 1" Size="450, 21" Text="$(S_ServiceSettings_HowToInstallAndStart)" TabIndex="4" />
+  <Label Name="ChooseServiceUserLabel" Location="12, 125" Size="438, 20" Text="$(S_ServiceSettings_ChooseServiceUser)" TabIndex="5" Visible="False" />
+  <TextBox Name="ServiceUser" Location="12, 149" Size="438, 20" TabIndex="6" Visible="False" />
+  <Label Name="ChooseServicePasswordLabel" Location="12, 180" Size="438, 20" Text="$(S_ServiceSettings_ChooseServicePassword)" TabIndex="7" Visible="False" />
+  <Password Name="ServicePassword" Location="12, 204" Size="438, 20" TabIndex="8" Visible="False" />
+</Dialog>

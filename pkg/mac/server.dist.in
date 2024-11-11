@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="2">
+    <pkg-ref id="org.filezilla-project.filezilla-server"/>
+    <product id="org.filezilla-project.filezilla-server" version="@PACKAGE_VERSION_SHORT@"/>
+    <title>@PACKAGE_STRING@</title>
+	<domains enable_localSystem="true"/>
+    <options customize="always" require-scripts="false" hostArchitectures="x86_64"/>
+	<option rootVolumeOnly="true"/>
+    <volume-check>
+        <allowed-os-versions>
+            <os-version min="10.13"/>
+        </allowed-os-versions>
+    </volume-check>
+    <choices-outline>
+        <line choice="ui">
+          <line choice="install.ui"/>
+        </line>
+        <line choice="service">
+          <line choice="install.service"/>
+        </line>
+    </choices-outline>
+    <choice id="ui" title="Administration interface" version="@PACKAGE_VERSION_SHORT@" enabled="false" description="Installs the Administration Interface used to administrate local and remote instances of @PACKAGE_NAME@.">
+    </choice>
+    <choice id="service" title="Install server service" version="@PACKAGE_VERSION_SHORT@" description="Sets up @PACKAGE_NAME@ to run as a system service (daemon) started automatically with the operating system.">
+    </choice>
+    <choice id="install.ui" visible="false" customLocation="/Applications">
+		<pkg-ref id="org.filezilla-project.filezilla-server"/>
+    </choice>
+    <choice id="install.service" visible="false" customLocation="/Applications">
+        <pkg-ref id="org.filezilla-project.filezilla-server.service"/>
+    </choice>
+    <pkg-ref id="org.filezilla-project.filezilla-server" version="@PACKAGE_VERSION_SHORT@" onConclusion="none">main.pkg</pkg-ref>
+    <pkg-ref id="org.filezilla-project.filezilla-server.service" version="@PACKAGE_VERSION_SHORT@" onConclusion="none">service.pkg</pkg-ref>
+</installer-gui-script>
