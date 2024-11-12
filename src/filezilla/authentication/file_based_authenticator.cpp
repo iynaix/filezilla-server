@@ -260,12 +260,24 @@ void file_based_authenticator::sanitize(file_based_authenticator::groups &groups
 
 		// Sanitize system user
 		bool is_system_user = &u == &system_user;
-		if (is_system_user && !u.second.credentials.password.get_impersonation()) {
-			if (logger)
-				logger->log_u(logmsg::warning, L"%s doesn't have impersonation set. Forcing credentials to 'impersonation'.", users::system_user_name);
+		if (is_system_user) {
+			if (!u.second.credentials.password.get_impersonation()) {
+				if (logger) {
+					logger->log_u(logmsg::warning, L"%s doesn't have impersonation set. Forcing credentials to 'impersonation'.", users::system_user_name);
+				}
 
-			u.second.credentials.password.impersonate();
+				u.second.credentials.password.impersonate();
+			}
+
+			if (u.second.methods.has(method::none())) {
+				if (logger) {
+					logger->log_u(logmsg::warning, L"%s was wrongly allowed to login without credentials. Fixed.", users::system_user_name);
+				}
+
+				u.second.methods.remove(method::none());
+			}
 		}
+
 
 		//Disallow invalid chars in usernames
 		if ((!is_system_user && (u.first.empty() || u.first.find_first_of(users.invalid_chars_in_name) != std::string::npos))) {
@@ -369,7 +381,7 @@ void file_based_authenticator::update()
 			}
 
 			tvfs::async_autocreate_directories(std::move(mt), std::move(b), async_receive(async_handlers_.try_emplace(nullptr, event_loop_).first->second) >> [su = std::move(su)]() mutable {
-					notify(su);
+				notify(su);
 			});
 		}
 	}

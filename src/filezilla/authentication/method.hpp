@@ -128,7 +128,7 @@ class methods_set
 
 public:
 	template <typename T>
-	static constexpr std::size_t idx = mpl::index_of_v<any_method::variant, T>-1;
+	   static constexpr std::size_t index = mpl::index_of_v<any_method::variant, T>;
 
 	template <typename... Ts, std::enable_if_t<(mpl::contains_v<any_method::variant, Ts> &&...)>* = nullptr>
 	methods_set(const Ts &...) noexcept
@@ -157,7 +157,10 @@ public:
 	template <typename T>
 	bool has() const noexcept
 	{
-		return bits_[idx<T>];
+			   if (auto i = index<T>; i > 0)
+					   return bits_[i-1];
+
+			   return bits_.none();
 	}
 
 	bool has(const any_method &vd) const noexcept
@@ -165,13 +168,14 @@ public:
 		if (vd.index() > 0)
 			return bits_[vd.index()-1];
 
-		return false;
+			   return bits_.none();
 	}
 
 	template <typename T>
 	void erase() noexcept
 	{
-		bits_[idx<T>] = false;
+			   if (auto i = index<T>; i > 0)
+					   bits_[i-1] = false;
 	}
 
 	void erase(const any_method &vd) noexcept
@@ -188,7 +192,8 @@ public:
 	template <typename T>
 	void add() noexcept
 	{
-		bits_[idx<T>] = true;
+			   if (auto i = index<T>; i > 0)
+					   bits_[i-1] = true;
 	}
 
 	void add(const any_method &vd) noexcept
@@ -274,6 +279,10 @@ public:
 	/// \brief \returns true if all the methods in the set are also in any of the list's sets, false otherwise.
 	bool can_verify(const methods_set &method) const;
 
+	/// \brief \removes from the list all methods sets that match exactly with the given one.
+	/// \returns true if any removal happened, false otherwise.
+	bool remove(const methods_set &set);
+
 	/// \brief erases from all methods sets in the list, the method used to verify the data.
 	/// It also removes from the list all the methods sets that DO NOT contain the method used to verify the data,
 	/// effectively choosing a "validation route" among all the possible ones.
@@ -292,6 +301,62 @@ public:
 
 	static const available_methods none;
 };
+
+}
+
+namespace fz::serialization {
+
+template <typename Archive, trait::enable_if<trait::is_textual_v<Archive>> = trait::sfinae>
+void load_minimal(const Archive &, fz::authentication::available_methods &am, const std::string &s)
+{
+	am = {};
+
+	for (auto x: fz::strtokenizer(s, ", ", true)) {
+		if (!s.empty()) {
+			am.push_back(fz::authentication::methods_set(x));
+		}
+	}
+
+	am.erase(std::unique(am.begin(), am.end()), am.end());
+}
+
+template <typename Archive, trait::enable_if<trait::is_textual_v<Archive>> = trait::sfinae>
+std::string save_minimal(const Archive &, const fz::authentication::available_methods &am)
+{
+	std::string ret;
+
+	for (auto &x: am) {
+		ret += to_string(x);
+		ret += ",";
+	}
+
+	if (ret.size() > 0)
+		ret.resize(ret.size() - 1);
+
+	return ret;
+}
+
+template <typename Archive, trait::enable_if<!trait::is_textual_v<Archive>> = trait::sfinae>
+void serialize(Archive &ar, fz::authentication::available_methods &am)
+{
+	ar(static_cast<fz::authentication::available_methods::vector&>(am));
+}
+
+template <typename Archive>
+struct specialize<
+	Archive,
+	fz::authentication::available_methods,
+	specialization::unversioned_nonmember_load_save_minimal,
+	std::enable_if_t<trait::is_textual_v<Archive>>
+>{};
+
+template <typename Archive>
+struct specialize<
+	Archive,
+	fz::authentication::available_methods,
+	specialization::unversioned_nonmember_serialize,
+	std::enable_if_t<!trait::is_textual_v<Archive>>
+>{};
 
 }
 

@@ -3,6 +3,11 @@ Legend:
   + New feature or important bugfix
   - Bugfixes and other changes
 
+1.9.4 (2024-11-11)
+
+- Fixed a regression causing the setting 'do not require authentication' to get lost when restarting the server. Note: To see the effect of this fix, administrators must manually reapply the 'do not require authentication' setting for affected users. After this adjustment, the setting will persist as expected.
+- MSW: Added NETWORK_SERVICE as a allowed user for the config dir ownership.
+
 1.9.3 (2024-10-16)
 
 - Fixed a regression causing the automatic renewal of the Let's Encrypt® certificates to not work properly.

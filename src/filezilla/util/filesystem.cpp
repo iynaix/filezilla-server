@@ -229,6 +229,26 @@ bool basic_path<Char, Format, Kind>::check_ownership(path_ownership ownership, l
 		return false;
 	}
 
+	auto network = [&] {
+		std::vector<BYTE> ret;
+
+		DWORD size = 0;
+		CreateWellKnownSid(WinNetworkServiceSid, nullptr, nullptr, &size);
+		ret.resize(size);
+
+		if (!CreateWellKnownSid(WinNetworkServiceSid, nullptr, ret.data(), &size)) {
+			auto err = GetLastError();
+			logger.log(logmsg::error, L"CreateWellKnownSid(WinNetworkServiceSid) failed: %s (%d)", strsyserror(err), err);
+			ret.clear();
+		}
+
+		return ret;
+	}();
+
+	if (network.empty()) {
+		return false;
+	}
+
 	auto trusted_installer = [&] {
 		struct deleter {
 			using pointer = PSID;
@@ -260,7 +280,7 @@ bool basic_path<Char, Format, Kind>::check_ownership(path_ownership ownership, l
 		}
 
 		if (ownership == user_or_admin_ownership) {
-			if (EqualSid(sid, admin.data()) || EqualSid(sid, system.data()) || EqualSid(sid, trusted_installer.get())) {
+			if (EqualSid(sid, admin.data()) || EqualSid(sid, system.data()) || EqualSid(sid, network.data()) || EqualSid(sid, trusted_installer.get())) {
 				return true;
 			}
 		}

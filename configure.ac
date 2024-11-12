@@ -2,7 +2,7 @@ define(COPYRIGHT_NOTICE, [Copyright (C) 2019-2024 Tim Kosse and Business Follows
 
 AC_INIT(
   [FileZilla Server],
-  [1.9.3],
+  [1.9.4],
   [Tim Kosse <tim.kosse@filezilla-project.org>],,[https://filezilla-project.org/])
 AC_COPYRIGHT(COPYRIGHT_NOTICE)
 

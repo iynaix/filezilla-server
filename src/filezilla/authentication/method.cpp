@@ -40,7 +40,15 @@ bool available_methods::can_verify(const methods_set &methods) const
 	}
 
 	return false;
+}
 
+bool available_methods::remove(const methods_set &set)
+{
+	auto old_size = size();
+
+	erase(std::remove(begin(), end(), set), end());
+
+	return size() != old_size;
 }
 
 bool available_methods::set_verified(const any_method &method)
@@ -118,9 +126,15 @@ std::wstring to_wstring(const methods_list &ml)
 }
 
 template <typename String, std::size_t Size>
-static String to_string(const std::bitset<Size> &bits)
+// Taking in as first parameter a reference to the methods_set so that we're sure this definition will never collide with any other defined in third party libraries
+static String to_string(const methods_set &, const std::bitset<Size> &bits)
 {
 	using C = typename String::value_type;
+
+	if (bits.none()) {
+		return method::none::name<C>;
+	}
+
 	String ret;
 
 	for (std::size_t i = 0; i < Size; ++i) {
@@ -141,12 +155,12 @@ static String to_string(const std::bitset<Size> &bits)
 
 std::string to_string(const methods_set &set)
 {
-	return to_string<std::string>(set.bits_);
+	return to_string<std::string>(set, set.bits_);
 }
 
 std::wstring to_wstring(const methods_set &set)
 {
-	return to_string<std::wstring>(set.bits_);
+	return to_string<std::wstring>(set, set.bits_);
 }
 
 methods_set::methods_set(std::string_view v) noexcept {
@@ -156,7 +170,7 @@ methods_set::methods_set(std::string_view v) noexcept {
 		bits_ = bits(number);
 	}
 	else
-	for (auto m: strtokenizer(v, "|", true)) {
+	for (auto m: strtokenizer(v, "|", false)) {
 		mpl::for_each<any_method::variant>([&](auto t, auto i) {
 			std::string_view name = decltype(t)::type::template name<char>;
 			if (m == name) {
@@ -170,6 +184,5 @@ methods_set::methods_set(std::string_view v) noexcept {
 		});
 	}
 }
-
 
 }
